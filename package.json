@@ -1,0 +1,14 @@
+{
+  "name": "sunfounder_superkit_nodejs_code_for_raspberrypi",
+  "version": "1.0.0",
+  "description": "Rewrite of the python code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "onoff": "1.1.2"
+  }
+}
