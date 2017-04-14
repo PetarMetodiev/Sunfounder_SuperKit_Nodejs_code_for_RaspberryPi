@@ -8,10 +8,11 @@ const led = new Gpio(22, 'out');
 const toggleState = (curr) => curr === 1 ? 0 : 1;
 
 process.on('SIGINT', function () {
-	led.unexport();
 	// Gracefull exit.
 	console.info('Terminating and shutting down...');
-	process.exit();
+	terminate(led);
+	// led.unexport();
+	// process.exit();
 });
 
 const blink = (ledId, {
@@ -28,8 +29,15 @@ const blink = (ledId, {
 	ledId.write(state, err => {
 		if (err) {
 			console.error(err);
-			ledId.unexport();
-			process.exit();
+			terminate(ledId);
+			// ledId.unexport();
+			// process.exit();
+		}
+
+		if (wait >= 2020) {
+			console.info('Reached time limit.');
+			console.info('Terminating...');
+			terminate(ledId);
 		}
 
 		ledId.read((err, value) => {
@@ -38,7 +46,8 @@ const blink = (ledId, {
 			setTimeout(function () {
 				blink(ledId, {
 					state
-					, wait
+					, wait: ++wait
+					, startMessage: 'Interval'
 				});
 			}, wait);
 		});
@@ -46,7 +55,12 @@ const blink = (ledId, {
 	});
 };
 
+terminate = (...ledIds) => { 
+	ledIds.forEach(id => id.unexport());
+	process.exit();
+}
+
 blink(led, {
-	wait: 500
-	, startMessage: 'Blinking interval set to'
+	wait: 1
+	, startMessage: 'Blinking with interval set to'
 });
